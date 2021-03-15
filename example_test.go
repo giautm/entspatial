@@ -2,24 +2,39 @@ package entspatial
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
-
-	"github.com/a8m/entspatial/ent"
-	"github.com/a8m/entspatial/ent/schema"
+	"os"
 
 	"entgo.io/ent/dialect"
-	_ "github.com/go-sql-driver/mysql"
+	entsql "entgo.io/ent/dialect/sql"
+	"github.com/a8m/entspatial/ent"
+	"github.com/a8m/entspatial/ent/schema"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
-func Example_Point() {
-	host, port := "localhost", 3308
-	client, err := ent.Open(dialect.MySQL, fmt.Sprintf("root:pass@tcp(%s:%d)/test?parseTime=True", host, port))
+// Open new connection
+func Open(databaseUrl string) *ent.Client {
+	db, err := sql.Open("pgx", databaseUrl)
 	if err != nil {
-		log.Fatalf("failed opening connection to mysql: %v", err)
+		log.Fatal(err)
 	}
+
+	// Create an ent.Driver from `db`.
+	drv := entsql.OpenDB(dialect.Postgres, db)
+	return ent.NewClient(ent.Driver(drv))
+}
+
+func Example_Point() {
+	client := Open("postgresql://viecco:example@localhost:5433/viec")
 	defer client.Close()
 	ctx := context.Background()
+
+	if err := client.Schema.WriteTo(ctx, os.Stdout); err != nil {
+		panic(err)
+	}
+
 	// Run the auto migration tool.
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
@@ -39,6 +54,9 @@ func Example_Point() {
 	fmt.Println(office.Name, office.Coords)
 
 	// Output:
+	// BEGIN;
+	// ALTER TABLE "locations" ALTER COLUMN "coords" TYPE Geometry(POINT,4326), ALTER COLUMN "coords" SET NOT NULL;
+	// COMMIT;
 	// TLV [32.109333 34.855499]
 	// FB [32.072184 34.78471]
 }

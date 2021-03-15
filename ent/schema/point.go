@@ -37,7 +37,7 @@ func (p Point) Value() (driver.Value, error) {
 // FormatParam implements the sql.ParamFormatter interface to tell the SQL
 // builder that the placeholder for a Point parameter needs to be formatted.
 func (p Point) FormatParam(placeholder string, info *sql.StmtInfo) string {
-	if info.Dialect == dialect.MySQL {
+	if info.Dialect == dialect.MySQL || info.Dialect == dialect.Postgres {
 		return "ST_GeomFromWKB(" + placeholder + ")"
 	}
 	return placeholder
@@ -46,6 +46,7 @@ func (p Point) FormatParam(placeholder string, info *sql.StmtInfo) string {
 // SchemaType defines the schema-type of the Point object.
 func (Point) SchemaType() map[string]string {
 	return map[string]string{
-		dialect.MySQL: "POINT",
+		dialect.MySQL:    "POINT",
+		dialect.Postgres: "Geometry(POINT,4326)",
 	}
 }

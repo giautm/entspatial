@@ -18,3 +18,13 @@ func (Location) Fields() []ent.Field {
 	}
 }
 ```
+
+Run following command to start PostGIS docker
+```sh
+docker run -d \
+  -p 127.0.0.1:5433:5432/tcp \
+  -e POSTGRES_DB=viec \
+  -e POSTGRES_USER=viecco \
+  -e POSTGRES_PASSWORD=example \
+  postgis/postgis
+```

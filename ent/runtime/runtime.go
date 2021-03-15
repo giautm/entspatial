@@ -5,6 +5,6 @@ package runtime
 // The schema-stitching logic is generated in github.com/a8m/entspatial/ent/runtime.go
 
 const (
-	Version = "v0.6.1-0.20210226123410-66ec8ceb1afd"            // Version of ent codegen.
-	Sum     = "h1:cw6XUFV+7jCmV6mtBk3yaL3S3mAO0eniaKEcdaJM/Rg=" // Sum of ent codegen.
+	Version = "v0.7.0"                                          // Version of ent codegen.
+	Sum     = "h1:E3EjO0cUL61DvUg5ZEZdxa4yTL+4SuZv0LqBExo8CQA=" // Sum of ent codegen.
 )

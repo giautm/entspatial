@@ -12,7 +12,7 @@ var (
 	LocationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "coords", Type: field.TypeOther, SchemaType: map[string]string{"mysql": "POINT"}},
+		{Name: "coords", Type: field.TypeOther, SchemaType: map[string]string{"mysql": "POINT", "postgres": "Geometry(POINT,4326)"}},
 		{Name: "location_children", Type: field.TypeInt, Nullable: true},
 	}
 	// LocationsTable holds the schema information for the "locations" table.
@@ -22,9 +22,8 @@ var (
 		PrimaryKey: []*schema.Column{LocationsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:  "locations_locations_children",
-				Columns: []*schema.Column{LocationsColumns[3]},
-
+				Symbol:     "locations_locations_children",
+				Columns:    []*schema.Column{LocationsColumns[3]},
 				RefColumns: []*schema.Column{LocationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

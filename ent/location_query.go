@@ -413,7 +413,8 @@ func (lq *LocationQuery) sqlAll(ctx context.Context) ([]*Location, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Location)
 		for i := range nodes {
-			if fk := nodes[i].location_children; fk != nil {
+			fk := nodes[i].location_children
+			if fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
@@ -474,7 +475,7 @@ func (lq *LocationQuery) sqlCount(ctx context.Context) (int, error) {
 func (lq *LocationQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := lq.sqlCount(ctx)
 	if err != nil {
-		return false, fmt.Errorf("ent: check existence: %v", err)
+		return false, fmt.Errorf("ent: check existence: %w", err)
 	}
 	return n > 0, nil
 }
